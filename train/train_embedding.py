@@ -1,0 +1,82 @@
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torch.utils.data import DataLoader, random_split
+import os
+
+from models import ChampionEmbedding
+from train.trainers import EmbeddingTrainer
+from utils import ChampionStatsDataset, load_champion_stats, save_champion_embeddings
+from config import *
+
+
+def train_embedding_model():
+    print("=" * 60)
+    print("Training Champion Embedding Model")
+    print("=" * 60)
+
+    # Load champion stats
+    print(f"\nLoading champion stats from {CHAMPION_STATS_FILE}...")
+    champion_df = load_champion_stats(CHAMPION_STATS_FILE)
+    print(f"Loaded {len(champion_df)} champions")
+    # Create dataset
+    dataset = ChampionStatsDataset(champion_df, CHAMPION_FEATURES)
+    # Split into train/val
+    train_size = int(0.8 * len(dataset))
+    val_size = len(dataset) - train_size
+    train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
+    # Create dataloaders
+    train_loader = DataLoader(
+        train_dataset, batch_size=EMBEDDING_CONFIG["batch_size"], shuffle=True
+    )
+    val_loader = DataLoader(val_dataset, batch_size=EMBEDDING_CONFIG["batch_size"])
+    # Initialize model
+    model = ChampionEmbedding(
+        input_dim=EMBEDDING_CONFIG["input_dim"],
+        hidden_dims=EMBEDDING_CONFIG["hidden_dims"],
+        embedding_dim=EMBEDDING_CONFIG["embedding_dim"],
+        dropout=EMBEDDING_CONFIG["dropout"],
+    )
+    # Setup training
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    print(f"\nUsing device: {device}")
+    trainer = EmbeddingTrainer(model, device)
+    optimizer = optim.Adam(model.parameters(), lr=EMBEDDING_CONFIG["learning_rate"])
+    criterion = nn.MSELoss()
+    # Training loop
+    best_val_loss = float("inf")
+    print(f"\nTraining for {EMBEDDING_CONFIG['epochs']} epochs...")
+    for epoch in range(EMBEDDING_CONFIG["epochs"]):
+        train_loss = trainer.train_epoch(train_loader, optimizer, criterion)
+        val_loss = trainer.evaluate(val_loader, criterion)
+        print(
+            f"Epoch {epoch+1}/{EMBEDDING_CONFIG['epochs']} - "
+            f"Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}"
+        )
+        # Save best model
+        if val_loss < best_val_loss:
+            best_val_loss = val_loss
+            os.makedirs(MODEL_DIR, exist_ok=True)
+            torch.save(model.state_dict(), EMBEDDING_MODEL_PATH)
+            print(f"  → Saved new best model (val_loss: {val_loss:.4f})")
+    # Generate embeddings for all champions
+    print("\nGenerating embeddings for all champions...")
+    model.eval()
+    embeddings_dict = {}
+    with torch.no_grad():
+        for i in range(len(dataset)):
+            features, _ = dataset[i]
+            features = features.unsqueeze(0).to(device)
+            embedding = model(features).squeeze(0).cpu()
+            embeddings_dict[dataset.champion_names[i]] = embedding
+    # Save embeddings
+    embeddings_path = f"{MODEL_DIR}/champion_embeddings.pth"
+    save_champion_embeddings(embeddings_dict, embeddings_path)
+    print(f"Saved champion embeddings to {embeddings_path}")
+    print("\nEmbedding training complete!")
+    print(f"Best validation loss: {best_val_loss:.4f}")
+    return embeddings_dict
+
+
+if __name__ == "__main__":
+    train_embedding_model()

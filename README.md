@@ -10,7 +10,7 @@ AI-powered League of Legends draft pick recommendation system using a two-stage 
 
 2. **Prepare Draft History**
 
-   - Add draft scenarios to `data/draft_history_example.json` (see format below).
+   - Add draft scenarios to `data/draft_history.json`.
    - Each entry specifies the visible draft state and the optimal pick.
 
 3. **Train Models**

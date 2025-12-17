@@ -1,0 +1,16 @@
+champion_name,style,damage,toughness,control,mobility,utility,pointclick_cc,skillshot_cc
+Caitlyn,75,2,0,1,1,1,1,2
+Jinx,70,2,0,1,1,2,0,2
+Vayne,85,2,0,1,2,0,1,1
+Thresh,20,1,2,2,1,2,1,3
+Leona,15,1,2,2,1,1,2,2
+Nautilus,10,1,2,2,0,1,3,2
+Lux,25,2,0,2,1,2,0,3
+Blitzcrank,30,1,2,2,0,1,1,2
+Malphite,40,1,2,2,1,1,0,2
+Zed,50,2,0,1,2,1,0,1
+Yasuo,60,2,0,2,2,1,0,1
+Ahri,35,2,0,1,2,2,1,2
+Ezreal,55,2,0,0,2,1,0,1
+Jhin,65,2,0,1,1,1,0,2
+Ashe,80,2,0,2,0,2,0,2

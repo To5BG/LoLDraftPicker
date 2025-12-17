@@ -1,0 +1,15 @@
+[
+  {
+    "enemy_adc": "Caitlyn",
+    "enemy_support": "Lux",
+    "my_support": "Thresh",
+    "teammate_1": "Malphite",
+    "teammate_2": "Zed",
+    "teammate_3": "Jarvan IV",
+    "enemy_1": "Yasuo",
+    "enemy_2": "Lee Sin",
+    "enemy_3": "Amumu",
+    "optimal_pick": "Vayne",
+    "result": "win"
+  }
+]

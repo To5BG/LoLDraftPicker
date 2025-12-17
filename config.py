@@ -17,7 +17,7 @@ EMBEDDING_CONFIG = {
     "embedding_dim": 2,  # learned embedding size
     "dropout": 0.2,
     "learning_rate": 0.001,
-    "batch_size": 32,
+    "batch_size": 8,
     "epochs": 1000,
 }
 
@@ -29,14 +29,16 @@ PICKER_CONFIG = {
     "hidden_dims": [128, 64, 32],
     "dropout": 0.3,
     "learning_rate": 0.0005,
-    "batch_size": 64,
+    "batch_size": 8,
     "epochs": 150,
 }
 
-# Data paths
+# Data and model paths
 DATA_DIR = "data"
-MODEL_DIR = "saved_models"
 CHAMPION_STATS_FILE = f"{DATA_DIR}/champion_stats.csv"
 DRAFT_HISTORY_FILE = f"{DATA_DIR}/draft_history.json"
+
+MODEL_DIR = "saved_models"
+EMBEDDINGS_PATH = f"{MODEL_DIR}/champion_embeddings.pth"
 EMBEDDING_MODEL_PATH = f"{MODEL_DIR}/embedding_model.pth"
 PICKER_MODEL_PATH = f"{MODEL_DIR}/picker_model.pth"

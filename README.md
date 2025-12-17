@@ -1,81 +1,54 @@
-# LoL Draft Picker - AI Champion Recommendation System
+# LoL Draft Picker
 
-A two-stage machine learning model for predicting optimal champion picks in League of Legends.
-Currently only for ADC picks.
+AI-powered League of Legends draft pick recommendation system using a two-stage deep learning pipeline.
 
-## Architecture
+## Pipeline Overview
 
-### Stage 1: Champion Embedding Model
+1. **Add Champions**
 
-- **Input**: Hard champion parameters (range, mobility, tankiness, etc.)
-- **Output**: Learned embedding vector (2+ dimensions)
+   - Use `add_champion.py` to interactively add or update champion stats in `data/champion_stats.csv`.
 
-### Stage 2: Draft Picker Model
+2. **Prepare Draft History**
 
-- **Input**: Embeddings of team champions, support, and visible enemies
-- **Output**: Predicted optimal embedding for best pick
+   - Add draft scenarios to `data/draft_history_example.json` (see format below).
+   - Each entry specifies the visible draft state and the optimal pick.
 
-## Setup
+3. **Train Models**
 
-1. Install dependencies:
+   - **Stage 1:** Train champion embeddings:
+     ```bash
+     python -m train.train_embedding
+     ```
+   - **Stage 2:** Train the draft picker model:
+     ```bash
+     python -m train.train_picker
+     ```
 
-```bash
-pip install -r requirements.txt
-```
+## Inference Usage
 
-2. Prepare your data:
-   - Add champion stats to `data/champion_stats.csv`
-   - Add draft history to `data/draft_history.json`
-
-## Training
-
-### Stage 1: Train Champion Embeddings
+**Interactive:**
 
 ```bash
-python train_embedding.py
+python main.py
 ```
 
-- Load champion stats
-- Train the embedding model
-- Save embeddings for all champions
-
-### Stage 2: Train Draft Picker
-
-```bash
-python train_picker.py
-```
-
-- Load champion embeddings from Stage 1
-- Train the draft prediction model
-- Save the trained picker model
-
-## Inference
-
-```bash
-python inference.py
-```
-
-Or use programmatically:
+**Programmatic:**
 
 ```python
 from inference import DraftPredictor
-
 predictor = DraftPredictor()
-
-# Get single best pick
 best_pick, confidence = predictor.predict(
-    my_team=['Malphite', 'Zed', 'Jarvan IV'],
-    my_support='Thresh',
-    enemy_team=['Caitlyn', 'Lux']
+        enemy_adc="Caitlyn",
+        enemy_support="Lux",
+        my_support="Thresh",
+        teammate_1="Malphite",
+        teammate_2="Zed",
+        teammate_3="Jarvan IV",
+        enemy_1="Yasuo",
+        enemy_2="Lee Sin",
+        enemy_3="Amumu"
 )
-
-# Get top 5 recommendations
-top_picks = predictor.get_top_k_recommendations(
-    my_team=['Malphite', 'Zed', 'Jarvan IV'],
-    my_support='Thresh',
-    enemy_team=['Caitlyn', 'Lux'],
-    k=5
-)
+print(f"Recommended: {best_pick} (confidence: {confidence:.2%})")
 ```
 
 ## Configuration

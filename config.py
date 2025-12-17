@@ -1,13 +1,18 @@
 # Champion parameters
 CHAMPION_FEATURES = [
-    "style",  # 0-100, basic-attack vs ability user
-    "damage",  # categorical/step (e.g. 0/1/2)
-    "toughness",  # 0/1/2
-    "control",  # 0/1/2
-    "mobility",  # 0/1/2
-    "utility",  # 0/1/2
-    "pointclick_cc",  # int: point-and-click CC count
-    "skillshot_cc",  # int: skillshot CC count
+    "hp",
+    "mp",
+    "ar",
+    "ad",
+    "mr",
+    "ms",
+    "range",
+    "style",
+    "damage",
+    "toughness",
+    "control",
+    "mobility",
+    "utility",
 ]
 
 # Model hyperparameters
@@ -37,6 +42,7 @@ PICKER_CONFIG = {
 DATA_DIR = "data"
 CHAMPION_STATS_FILE = f"{DATA_DIR}/champion_stats.csv"
 DRAFT_HISTORY_FILE = f"{DATA_DIR}/draft_history.json"
+SCRAP_DATA_PATH = f"{DATA_DIR}/scraped_champions"
 
 MODEL_DIR = "saved_models"
 EMBEDDINGS_PATH = f"{MODEL_DIR}/champion_embeddings.pth"

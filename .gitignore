@@ -47,3 +47,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Custom
+data/scraped_champions/

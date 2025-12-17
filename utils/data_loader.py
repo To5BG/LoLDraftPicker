@@ -3,29 +3,31 @@ import pandas as pd
 import numpy as np
 import torch
 from torch.utils.data import Dataset, DataLoader
+from sklearn.metrics import pairwise_distances
 
 
 class ChampionStatsDataset(Dataset):
-    def __init__(self, champion_stats_df, feature_columns):
+    def __init__(self, champion_stats_df, feature_columns, k_pos=3, m_neg=20):
         self.features = torch.FloatTensor(champion_stats_df[feature_columns].values)
-        # Infer target embedding dim from config, or default 2
-        try:
-            from config import EMBEDDING_CONFIG
-
-            target_dim = EMBEDDING_CONFIG.get("embedding_dim", 2)
-        except Exception:
-            target_dim = 2
-        # Init
-        self.targets = torch.FloatTensor(
-            np.random.randn(len(champion_stats_df), target_dim)
-        )
         self.champion_names = champion_stats_df["champion_name"].values
+        self.n = len(self.features)
+        # Compute pairwise distances
+        dists = pairwise_distances(self.features, self.features, metric="euclidean")
+        self.pos_indices = [np.argsort(dists[i])[1 : k_pos + 1] for i in range(self.n)]
+        self.neg_indices = [np.argsort(dists[i])[-m_neg:] for i in range(self.n)]
 
     def __len__(self):
-        return len(self.features)
+        return self.n
 
     def __getitem__(self, idx):
-        return self.features[idx], self.targets[idx]
+        anchor = self.features[idx]
+        # Sample positive
+        pos_idx = np.random.choice(self.pos_indices[idx])
+        positive = self.features[pos_idx]
+        # Sample negative
+        neg_idx = np.random.choice(self.neg_indices[idx])
+        negative = self.features[neg_idx]
+        return anchor, positive, negative
 
 
 class DraftDataset(Dataset):

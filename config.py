@@ -18,7 +18,7 @@ EMBEDDING_CONFIG = {
     "dropout": 0.2,
     "learning_rate": 0.001,
     "batch_size": 32,
-    "epochs": 100,
+    "epochs": 1000,
 }
 
 # Picker config (embedding size is in EMBEDDING_CONFIG)

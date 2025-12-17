@@ -40,9 +40,11 @@ def train_embedding_model():
     # Setup training
     device = "cuda" if torch.cuda.is_available() else "cpu"
     print(f"\nUsing device: {device}")
+    # Train
     trainer = EmbeddingTrainer(model, device)
     optimizer = optim.Adam(model.parameters(), lr=EMBEDDING_CONFIG["learning_rate"])
-    criterion = nn.MSELoss()
+    # Loss
+    criterion = nn.TripletMarginLoss(margin=1.0, p=2)
     # Training loop
     best_val_loss = float("inf")
     print(f"\nTraining for {EMBEDDING_CONFIG['epochs']} epochs...")
@@ -64,9 +66,8 @@ def train_embedding_model():
     model.eval()
     embeddings_dict = {}
     with torch.no_grad():
-        for i in range(len(dataset)):
-            features, _ = dataset[i]
-            features = features.unsqueeze(0).to(device)
+        for i in range(len(dataset.features)):
+            features = dataset.features[i].unsqueeze(0).to(device)
             embedding = model(features).squeeze(0).cpu()
             embeddings_dict[dataset.champion_names[i]] = embedding
     # Save embeddings

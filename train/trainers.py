@@ -10,13 +10,17 @@ class EmbeddingTrainer:
         self.model.train()
         total_loss = 0
         for batch in dataloader:
-            features, targets = batch
-            features = features.to(self.device)
-            targets = targets.to(self.device)
+            anchor, positive, negative = batch  # <-- unpack triplet
+            anchor = anchor.to(self.device)
+            positive = positive.to(self.device)
+            negative = negative.to(self.device)
 
             optimizer.zero_grad()
-            embeddings = self.model(features)
-            loss = criterion(embeddings, targets)
+            anchor_emb = self.model(anchor)
+            positive_emb = self.model(positive)
+            negative_emb = self.model(negative)
+
+            loss = criterion(anchor_emb, positive_emb, negative_emb)
             loss.backward()
             optimizer.step()
 
@@ -28,12 +32,16 @@ class EmbeddingTrainer:
         total_loss = 0
         with torch.no_grad():
             for batch in dataloader:
-                features, targets = batch
-                features = features.to(self.device)
-                targets = targets.to(self.device)
+                anchor, positive, negative = batch
+                anchor = anchor.to(self.device)
+                positive = positive.to(self.device)
+                negative = negative.to(self.device)
 
-                embeddings = self.model(features)
-                loss = criterion(embeddings, targets)
+                anchor_emb = self.model(anchor)
+                positive_emb = self.model(positive)
+                negative_emb = self.model(negative)
+
+                loss = criterion(anchor_emb, positive_emb, negative_emb)
                 total_loss += loss.item()
         return total_loss / len(dataloader)
 

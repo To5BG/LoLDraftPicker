@@ -20,7 +20,10 @@ class DraftPicker(nn.Module):
                 ]
             )
             prev_dim = hidden_dim
+        # Final output layers
         layers.append(nn.Linear(prev_dim, output_dim))
+        layers.append(nn.Sigmoid())
+
         self.network = nn.Sequential(*layers)
 
     def forward(

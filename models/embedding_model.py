@@ -17,8 +17,10 @@ class ChampionEmbedding(nn.Module):
                 ]
             )
             prev_dim = hidden_dim
-        # Final embedding layer
+        # Final embedding layers
         layers.append(nn.Linear(prev_dim, embedding_dim))
+        layers.append(nn.Sigmoid())
+
         self.network = nn.Sequential(*layers)
 
     def forward(self, x):

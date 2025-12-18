@@ -74,15 +74,35 @@ def train_embedding_model():
     print("\nGenerating embeddings for all champions...")
     model.eval()
     embeddings_dict = {}
+    embeddings_list = []
     with torch.no_grad():
         for i in range(len(dataset.features)):
             features = dataset.features[i].unsqueeze(0).to(device)
             embedding = model(features).squeeze(0).cpu()
             embeddings_dict[dataset.champion_names[i]] = embedding
-    # Save embeddings
-    embeddings_path = f"{MODEL_DIR}/champion_embeddings.pth"
-    save_champion_embeddings(embeddings_dict, embeddings_path)
-    print(f"Saved champion embeddings to {embeddings_path}")
+    embeddings_list.append(embedding)
+    # Save raw (unconstrained) embeddings
+    save_champion_embeddings(embeddings_dict, EMBEDDINGS_PATH)
+    print(f"Saved raw embeddings to {EMBEDDINGS_PATH}")
+    # Fit normalizer and save normalization parameters
+    print("\nComputing normalization parameters...")
+    all_embeddings = torch.stack(embeddings_list)
+    normalizer = EmbeddingNormalizer(
+        method="percentile",
+        percentile_range=(2, 98),
+        target_range=(-1, 1),  # Change to (0, 1) if preferred
+    )
+    normalizer.fit(all_embeddings)
+    save_normalizer(normalizer, EMBEDDING_NORMALIZER_MODEL_PATH)
+    print(f"Saved normalizer to {EMBEDDING_NORMALIZER_MODEL_PATH}")
+    # Optionally save normalized embeddings too
+    normalized_embeddings_dict = {}
+    for name, emb in embeddings_dict.items():
+        normalized_embeddings_dict[name] = normalizer.transform(
+            emb.unsqueeze(0)
+        ).squeeze(0)
+    save_champion_embeddings(normalized_embeddings_dict, EMBEDDINGS_NORMALIZED_PATH)
+    print(f"Saved normalized embeddings to {EMBEDDINGS_NORMALIZED_PATH}")
     print("\nEmbedding training complete!")
     print(f"Best validation loss: {best_val_loss:.4f}")
     return embeddings_dict

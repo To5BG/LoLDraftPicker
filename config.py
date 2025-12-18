@@ -47,5 +47,7 @@ SCRAP_DATA_PATH = f"{DATA_DIR}/scraped_champions"
 
 MODEL_DIR = "saved_models"
 EMBEDDINGS_PATH = f"{MODEL_DIR}/champion_embeddings.pth"
+EMBEDDINGS_NORMALIZED_PATH = f"{MODEL_DIR}/champion_embeddings_normalized.pth"
 EMBEDDING_MODEL_PATH = f"{MODEL_DIR}/embedding_model.pth"
+EMBEDDING_NORMALIZER_MODEL_PATH = f"{MODEL_DIR}/embedding_normalizer.pth"
 PICKER_MODEL_PATH = f"{MODEL_DIR}/picker_model.pth"

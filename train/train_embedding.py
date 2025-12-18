@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import numpy as np
 from torch.utils.data import DataLoader, random_split
 import os
 
@@ -26,10 +27,14 @@ def train_embedding_model():
     val_size = len(dataset) - train_size
     train_dataset, val_dataset = random_split(dataset, [train_size, val_size])
     # Create dataloaders
-    train_loader = DataLoader(
-        train_dataset, batch_size=EMBEDDING_CONFIG["batch_size"], shuffle=True
+    # Ensure effective batch size does not exceed dataset size
+    effective_batch_size = min(
+        EMBEDDING_CONFIG["batch_size"], max(1, len(train_dataset))
     )
-    val_loader = DataLoader(val_dataset, batch_size=EMBEDDING_CONFIG["batch_size"])
+    train_loader = DataLoader(
+        train_dataset, batch_size=effective_batch_size, shuffle=True, drop_last=True
+    )
+    val_loader = DataLoader(val_dataset, batch_size=effective_batch_size)
     # Initialize model
     model = ChampionEmbedding(
         input_dim=EMBEDDING_CONFIG["input_dim"],
@@ -43,8 +48,12 @@ def train_embedding_model():
     # Train
     trainer = EmbeddingTrainer(model, device)
     optimizer = optim.Adam(model.parameters(), lr=EMBEDDING_CONFIG["learning_rate"])
-    # Loss
-    criterion = nn.TripletMarginLoss(margin=1.0, p=2)
+    # Loss, scale margin by sqrt(embedding_dim)
+    criterion = nn.TripletMarginLoss(
+        margin=EMBEDDING_CONFIG["base_margin"]
+        * np.sqrt(EMBEDDING_CONFIG["embedding_dim"]),
+        p=2,
+    )
     # Training loop
     best_val_loss = float("inf")
     print(f"\nTraining for {EMBEDDING_CONFIG['epochs']} epochs...")

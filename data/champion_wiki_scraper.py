@@ -77,7 +77,7 @@ if __name__ == "__main__":
                 for feature in CHAMPION_FEATURES
             }
             pprint(champion_stats)
-            # Normalize values
+            # Cast values
             for k, v in list(champion_stats.items()):
                 if v is None:
                     champion_stats[k] = 0

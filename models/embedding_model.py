@@ -12,7 +12,7 @@ class ChampionEmbedding(nn.Module):
                 [
                     nn.Linear(prev_dim, hidden_dim),
                     nn.ReLU(),
-                    nn.BatchNorm1d(hidden_dim),
+                    nn.LayerNorm(hidden_dim),
                     nn.Dropout(dropout),
                 ]
             )

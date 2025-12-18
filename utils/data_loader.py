@@ -2,13 +2,16 @@ import json
 import pandas as pd
 import numpy as np
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 from sklearn.metrics import pairwise_distances
+from sklearn.preprocessing import StandardScaler
 
 
 class ChampionStatsDataset(Dataset):
     def __init__(self, champion_stats_df, feature_columns, k_pos=3, m_neg=20):
-        self.features = torch.FloatTensor(champion_stats_df[feature_columns].values)
+        features = champion_stats_df[feature_columns].values.astype(np.float32)
+        features = StandardScaler().fit_transform(features)
+        self.features = torch.FloatTensor(features)
         self.champion_names = champion_stats_df["champion_name"].values
         self.n = len(self.features)
         # Compute pairwise distances

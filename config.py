@@ -18,12 +18,13 @@ CHAMPION_FEATURES = [
 # Model hyperparameters
 EMBEDDING_CONFIG = {
     "input_dim": len(CHAMPION_FEATURES),
+    "base_margin": 0.13,
+    "embedding_dim": 2,
     "hidden_dims": [64, 32],
-    "embedding_dim": 2,  # learned embedding size
-    "dropout": 0.2,
+    "dropout": 0.1,
     "learning_rate": 0.001,
     "batch_size": 8,
-    "epochs": 1000,
+    "epochs": 100,
 }
 
 # Picker config (embedding size is in EMBEDDING_CONFIG)

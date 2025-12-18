@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import argparse
 import os
-from config import EMBEDDINGS_PATH
+from config import EMBEDDINGS_NORMALIZED_PATH, EMBEDDINGS_PATH
 
 
 def load_embeddings(path):
@@ -35,33 +35,23 @@ def visualize_embeddings(
         title = "Champion Embeddings (Native 2D)"
     x = embeddings_2d[:, 0]
     y = embeddings_2d[:, 1]
-    # Axis centering
-    x_mid = (x.min() + x.max()) / 2
-    y_mid = (y.min() + y.max()) / 2
-    x_shift = 0.5 - x_mid
-    y_shift = 0.5 - y_mid
-    x_vis = x + x_shift
-    y_vis = y + y_shift
     # Plot
     plt.figure(figsize=figsize)
-    plt.scatter(x_vis, y_vis, alpha=0.8)
+    plt.scatter(x, y, alpha=0.8)
     if annotate:
         for i, name in enumerate(names):
             plt.text(
-                x_vis[i],
-                y_vis[i],
+                x[i],
+                y[i],
                 name,
                 fontsize=8,
                 alpha=0.75,
             )
-    # Draw center lines at (0.5, 0.5)
-    plt.axhline(0.5, linewidth=0.5, color="gray", alpha=0.6)
-    plt.axvline(0.5, linewidth=0.5, color="gray", alpha=0.6)
     # Auto limits with padding
-    pad_x = (x_vis.max() - x_vis.min()) * 0.1
-    pad_y = (y_vis.max() - y_vis.min()) * 0.1
-    plt.xlim(x_vis.min() - pad_x, x_vis.max() + pad_x)
-    plt.ylim(y_vis.min() - pad_y, y_vis.max() + pad_y)
+    pad_x = (x.max() - x.min()) * 0.1
+    pad_y = (y.max() - y.min()) * 0.1
+    plt.xlim(x.min() - pad_x, x.max() + pad_x)
+    plt.ylim(y.min() - pad_y, y.max() + pad_y)
     # Labeling
     plt.xlabel("Embedding dim 1")
     plt.ylabel("Embedding dim 2")
@@ -76,7 +66,8 @@ def main():
     parser.add_argument(
         "--embeddings",
         type=str,
-        default=EMBEDDINGS_PATH,
+        # default=EMBEDDINGS_PATH,
+        default=EMBEDDINGS_NORMALIZED_PATH,
         help="Path to saved champion embeddings (.pth)",
     )
     parser.add_argument(

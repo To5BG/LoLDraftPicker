@@ -33,8 +33,7 @@ class DraftPredictor:
         self.picker_model.to(self.device)
         self.picker_model.eval()
         # Load champion embeddings
-        embeddings_path = f"{MODEL_DIR}/champion_embeddings.pth"
-        self.champion_embeddings = load_champion_embeddings(embeddings_path)
+        self.champion_embeddings = load_champion_embeddings(EMBEDDINGS_PATH)
         self.champion_names = list(self.champion_embeddings.keys())
         # Load champion stats for CC lookups
         self.champion_stats = load_champion_stats(CHAMPION_STATS_FILE)

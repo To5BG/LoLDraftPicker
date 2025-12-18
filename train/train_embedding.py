@@ -8,6 +8,7 @@ import os
 from models import ChampionEmbedding
 from train.trainers import EmbeddingTrainer
 from utils import ChampionStatsDataset, load_champion_stats, save_champion_embeddings
+from utils import EmbeddingNormalizer, save_normalizer
 from config import *
 
 
@@ -48,21 +49,21 @@ def train_embedding_model():
     # Train
     trainer = EmbeddingTrainer(model, device)
     optimizer = optim.Adam(model.parameters(), lr=EMBEDDING_CONFIG["learning_rate"])
-    # Loss, scale margin by sqrt(embedding_dim)
-    criterion = nn.TripletMarginLoss(
-        margin=EMBEDDING_CONFIG["base_margin"]
-        * np.sqrt(EMBEDDING_CONFIG["embedding_dim"]),
-        p=2,
-    )
     # Training loop
     best_val_loss = float("inf")
     print(f"\nTraining for {EMBEDDING_CONFIG['epochs']} epochs...")
+    print(
+        f"Loss weights: distance={trainer.lambda_distance}, "
+        f"uniformity={trainer.lambda_uniformity}, ortho={trainer.lambda_ortho}"
+    )
     for epoch in range(EMBEDDING_CONFIG["epochs"]):
-        train_loss = trainer.train_epoch(train_loader, optimizer, criterion)
-        val_loss = trainer.evaluate(val_loader, criterion)
+        train_loss, train_components = trainer.train_epoch(train_loader, optimizer)
+        val_loss, _ = trainer.evaluate(val_loader)
         print(
             f"Epoch {epoch+1}/{EMBEDDING_CONFIG['epochs']} - "
-            f"Train Loss: {train_loss:.4f}, Val Loss: {val_loss:.4f}"
+            f"Train Loss: {train_loss:.4f} (dist:{train_components['distance']:.4f}, "
+            f"unif:{train_components['uniformity']:.4f}, orth:{train_components['orthogonality']:.4f}) | "
+            f"Val Loss: {val_loss:.4f}"
         )
         # Save best model
         if val_loss < best_val_loss:
@@ -80,7 +81,7 @@ def train_embedding_model():
             features = dataset.features[i].unsqueeze(0).to(device)
             embedding = model(features).squeeze(0).cpu()
             embeddings_dict[dataset.champion_names[i]] = embedding
-    embeddings_list.append(embedding)
+            embeddings_list.append(embedding)
     # Save raw (unconstrained) embeddings
     save_champion_embeddings(embeddings_dict, EMBEDDINGS_PATH)
     print(f"Saved raw embeddings to {EMBEDDINGS_PATH}")

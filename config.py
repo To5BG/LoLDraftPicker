@@ -14,7 +14,6 @@ CHAMPION_NUMERIC_FEATURES = [
     "mobility",
     "utility",
 ]
-
 CHAMPION_CATEGORICAL_FEATURES = [
     "class",
 ]
@@ -34,6 +33,30 @@ CHAMPION_CLASSES = [
     "artillery",
     "diver",
     "enchanter",
+]
+
+# Item stats
+ITEM_STATS = [
+    "attack_damage",
+    "attack_speed",
+    "ability_power",
+    "armor",
+    "magic_resistance",
+    "lethality",
+    "armor_penetration",
+    "magic_penetration",
+    "health",
+    "ability_haste",
+    "base_mana_regeneration",
+    "heal_and_shield_power",
+    "movement_speed",
+    "mana",
+    "life_steal",
+    "critical_strike_chance",
+    "base_health_regeneration",
+    "omnivamp",
+    "critical_strike_damage",
+    "tenacity",
 ]
 
 # Whether to use one-hot encoding for class (True) or label encoding (False)
@@ -71,10 +94,13 @@ PICKER_CONFIG = {
 
 # Data and model paths
 DATA_DIR = "data"
+DRAFT_HISTORY_FILE = f"{DATA_DIR}/draft_history.json"
 CHAMPION_STATS_FILE = f"{DATA_DIR}/champion_stats.csv"
 CHAMPION_NAMES_FILE = f"{DATA_DIR}/champion_names.txt"
-DRAFT_HISTORY_FILE = f"{DATA_DIR}/draft_history.json"
-SCRAP_DATA_PATH = f"{DATA_DIR}/scraped_champions"
+SCRAP_CHAMPION_DATA_PATH = f"{DATA_DIR}/scraped_champions"
+ITEM_STATS_FILE = f"{DATA_DIR}/item_stats.csv"
+ITEM_NAMES_FILE = f"{DATA_DIR}/item_names.txt"
+SCRAP_ITEM_DATA_PATH = f"{DATA_DIR}/scraped_items"
 
 MODEL_DIR = "saved_models"
 EMBEDDINGS_PATH = f"{MODEL_DIR}/champion_embeddings.pth"

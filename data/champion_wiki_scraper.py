@@ -4,7 +4,7 @@ import re
 from pprint import pprint
 import json
 from config import (
-    SCRAP_DATA_PATH,
+    SCRAP_CHAMPION_DATA_PATH,
     CHAMPION_CATEGORICAL_FEATURES,
     CHAMPION_NUMERIC_FEATURES,
     CHAMPION_STATS_FILE,
@@ -78,12 +78,12 @@ def scrape_champion(champion_name: str):
 
 
 def save_champion_data_and_stats(champ_name, data):
-    # Save to file
-    file_name = f"{SCRAP_DATA_PATH}/{champ_name}.json"
-    os.makedirs(SCRAP_DATA_PATH, exist_ok=True)
+    # Save scraped data
+    file_name = f"{SCRAP_CHAMPION_DATA_PATH}/{champ_name}.json"
+    os.makedirs(SCRAP_CHAMPION_DATA_PATH, exist_ok=True)
     with open(file_name, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)
-    print(f"Data saved to {file_name}\n")
+    print(f"Data saved to {file_name}")
     champion_stats = {
         feature: data.get(feature)
         or data["numeric_stats"].get(feature)
@@ -124,9 +124,9 @@ def save_champion_data_and_stats(champ_name, data):
         # Save
         os.makedirs(os.path.dirname(CHAMPION_STATS_FILE), exist_ok=True)
         stats_df.to_csv(CHAMPION_STATS_FILE, index=False)
-        print(f"  Champion stats saved/updated in {CHAMPION_STATS_FILE}")
+        print(f"Champion stats saved/updated in {CHAMPION_STATS_FILE}")
     except Exception as e:
-        print(f"  Warning: failed to save champion stats to CSV: {e}")
+        print(f"Warning: failed to save champion stats to CSV: {e}")
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import argparse
 import os
-from config import EMBEDDINGS_NORMALIZED_PATH, EMBEDDINGS_PATH
+from config import *
 import numpy as np
 import plotly.graph_objects as go
 

@@ -83,6 +83,9 @@ if __name__ == "__main__":
             print(f"  → Saved new best model (val_loss: {val_loss:.4f})")
     # Generate embeddings for all champions
     print("\nGenerating embeddings for all champions...")
+    model.load_state_dict(
+        torch.load(EMBEDDING_MODEL_PATH, map_location=device, weights_only=True)
+    )
     model.eval()
     embeddings_dict = {}
     embeddings_list = []

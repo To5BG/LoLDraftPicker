@@ -63,22 +63,18 @@ class ChampionEmbeddingQuery:
 
 def main():
     query = ChampionEmbeddingQuery()
-
     print("\n" + "=" * 60)
     print("Example: Jinx embedding")
     print("=" * 60)
-
     # Raw embedding
     jinx_raw = query.get_embedding("jinx", normalized=False)
     print(f"\nJinx (raw): {jinx_raw.numpy()}")
     # Normalized embedding
     jinx_norm = query.get_embedding("jinx", normalized=True)
     print(f"Jinx (normalized): {jinx_norm.numpy()}")
-
     print("\n" + "=" * 60)
     print("Example: Similar champions to Jinx")
     print("=" * 60)
-
     similar = query.find_similar("jinx", top_k=10, normalized=True)
     for i, (name, dist) in enumerate(similar, 1):
         print(f"{i}. {name:20s} (distance: {dist:.4f})")

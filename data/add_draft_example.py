@@ -45,7 +45,6 @@ def main():
     print("=" * 60)
     print("Add Draft Example to History")
     print("=" * 60)
-
     # Load available champions
     champion_names = load_champion_names()
     if not champion_names:

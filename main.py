@@ -8,27 +8,22 @@ def get_champion_input(prompt):
 
 
 def main():
-    """Interactive draft pick recommendation"""
-
     print("=" * 60)
     print("LoL Draft Picker - AI Recommendation System")
     print("=" * 60)
     print("\nLoading models...")
-
     try:
         predictor = DraftPredictor()
     except Exception as e:
         print(f"Error loading models: {e}")
         print("\nMake sure you have trained models.")
         return
-
     print("Models loaded successfully!\n")
     print("=" * 60)
     print("Enter draft information")
     print("(Leave empty if champion not yet picked)")
     print("=" * 60)
     print()
-
     # Collect draft state
     my_support = get_champion_input("My Support: ")
     enemy_support = get_champion_input("Enemy Support: ")

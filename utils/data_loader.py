@@ -4,14 +4,44 @@ import numpy as np
 import torch
 from torch.utils.data import Dataset
 from sklearn.metrics import pairwise_distances
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, LabelEncoder, OneHotEncoder
 
 
 class ChampionStatsDataset(Dataset):
-    def __init__(self, champion_stats_df, feature_columns, k_pos=3, m_neg=20):
-        features = champion_stats_df[feature_columns].values.astype(np.float32)
-        features = StandardScaler().fit_transform(features)
-        self.features = torch.FloatTensor(features)
+    def __init__(
+        self,
+        champion_stats_df,
+        feature_columns,
+        use_class_onehot=True,
+        k_pos=3,
+        m_neg=20,
+    ):
+        # Extract and scale numeric features
+        numeric_features = champion_stats_df[feature_columns].values.astype(np.float32)
+        numeric_features = StandardScaler().fit_transform(numeric_features)
+        # Handle champion class (categorical feature)
+        champion_classes = champion_stats_df["class"].fillna("Unknown").values
+        if use_class_onehot:
+            # One-hot encoding
+            encoder = OneHotEncoder(sparse_output=False, handle_unknown="ignore")
+            class_features = encoder.fit_transform(
+                champion_classes.reshape(-1, 1)
+            ).astype(np.float32)
+            self.class_encoder = encoder
+            self.class_categories = encoder.categories_[0].tolist()
+        else:
+            # Label encoding
+            encoder = LabelEncoder()
+            class_features = (
+                encoder.fit_transform(champion_classes)
+                .reshape(-1, 1)
+                .astype(np.float32)
+            )
+            self.class_encoder = encoder
+            self.class_categories = encoder.classes_.tolist()
+        # Concatenate numeric and class features
+        all_features = np.concatenate([numeric_features, class_features], axis=1)
+        self.features = torch.FloatTensor(all_features)
         self.champion_names = champion_stats_df["champion_name"].values
         self.n = len(self.features)
         # Compute pairwise distances

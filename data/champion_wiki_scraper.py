@@ -32,6 +32,16 @@ def scrape_champion(champion_name: str):
             m = re.search(r"(\d+(\.\d+)?)", value_text)
             numeric_stats[label] = m.group(1) if m else value_text
     champ_info["numeric_stats"] = numeric_stats
+    # Champion Class
+    champion_class = None
+    class_div = soup.select_one(".infobox-data-label:-soup-contains('Class')")
+    if class_div:
+        class_value_div = class_div.find_next_sibling(
+            "div", class_="infobox-data-value"
+        )
+        if class_value_div:
+            champion_class = class_value_div.get_text(strip=True).split(",")[0].strip()
+    champ_info["class"] = champion_class
     # Style
     style_div = soup.select_one(".champion_style")
     style_number = None
@@ -56,6 +66,7 @@ def scrape_champion(champion_name: str):
             except:
                 wheel_stats[section] = 0
     champ_info["wheel_stats"] = wheel_stats
+    pprint(champ_info)
     return champ_info
 
 
@@ -76,12 +87,14 @@ if __name__ == "__main__":
                 or data["wheel_stats"].get(feature)
                 for feature in CHAMPION_FEATURES
             }
-            pprint(champion_stats)
-            # Cast values
+                        # Cast values
             for k, v in list(champion_stats.items()):
                 if v is None:
                     champion_stats[k] = 0
                     continue
+if k == "class":
+            champion_stats[k] = v.lower()
+            continue
                 try:
                     champion_stats[k] = int(v)
                 except Exception:
@@ -91,11 +104,11 @@ if __name__ == "__main__":
                 if os.path.exists(CHAMPION_STATS_FILE):
                     stats_df = pd.read_csv(CHAMPION_STATS_FILE)
                 else:
-                    stats_df = pd.DataFrame(
-                        columns=["champion_name"] + CHAMPION_FEATURES
-                    )
+            stats_df = pd.DataFrame(columns=["champion_name"] + CHAMPION_FEATURES)
                 # Prepare row
-                row = {"champion_name": champ_name}
+                row = {
+"champion_name": champ_name,
+}
                 row.update(champion_stats)
                 # If champion exists, replace row; else append
                 if champ_name in stats_df["champion_name"].values:

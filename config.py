@@ -13,7 +13,28 @@ CHAMPION_FEATURES = [
     "control",
     "mobility",
     "utility",
+    "class",
 ]
+
+# Champion classes (categorical feature)
+CHAMPION_CLASSES = [
+    "juggernaut",
+    "burst",
+    "assassin",
+    "marksman",
+    "vanguard",
+    "battlemage",
+    "specialist",
+    "catcher",
+    "skirmisher",
+    "warden",
+    "artillery",
+    "diver",
+    "enchanter",
+]
+
+# Whether to use one-hot encoding for class (True) or label encoding (False)
+USE_CLASS_ONEHOT = True
 
 # Model hyperparameters
 EMBEDDING_CONFIG = {
@@ -27,7 +48,7 @@ EMBEDDING_CONFIG = {
     # Loss weights
     "lambda_distance": 1.0,
     "lambda_uniformity": 1.0,
-    "lambda_ortho": 0.15,
+    "lambda_ortho": 0.1,
 }
 
 # Picker config (embedding size is in EMBEDDING_CONFIG)
@@ -39,12 +60,13 @@ PICKER_CONFIG = {
     "dropout": 0.3,
     "learning_rate": 0.0005,
     "batch_size": 8,
-    "epochs": 150,
+    "epochs": 200,
 }
 
 # Data and model paths
 DATA_DIR = "data"
 CHAMPION_STATS_FILE = f"{DATA_DIR}/champion_stats.csv"
+CHAMPION_NAMES_FILE = f"{DATA_DIR}/champion_names.txt"
 DRAFT_HISTORY_FILE = f"{DATA_DIR}/draft_history.json"
 SCRAP_DATA_PATH = f"{DATA_DIR}/scraped_champions"
 

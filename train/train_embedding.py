@@ -21,8 +21,11 @@ def train_embedding_model():
     print(f"\nLoading champion stats from {CHAMPION_STATS_FILE}...")
     champion_df = load_champion_stats(CHAMPION_STATS_FILE)
     print(f"Loaded {len(champion_df)} champions")
-    # Create dataset
-    dataset = ChampionStatsDataset(champion_df, CHAMPION_FEATURES)
+    dataset = ChampionStatsDataset(
+        champion_df,
+        CHAMPION_FEATURES,
+        use_class_onehot=USE_CLASS_ONEHOT,
+    )
     # Split into train/val
     train_size = int(0.8 * len(dataset))
     val_size = len(dataset) - train_size

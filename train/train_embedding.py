@@ -21,6 +21,13 @@ def train_embedding_model():
     print(f"\nLoading champion stats from {CHAMPION_STATS_FILE}...")
     champion_df = load_champion_stats(CHAMPION_STATS_FILE)
     print(f"Loaded {len(champion_df)} champions")
+    # Save champion names to file for batch scraping
+    champion_names = champion_df["champion_name"].tolist()
+    os.makedirs(DATA_DIR, exist_ok=True)
+    with open(CHAMPION_NAMES_FILE, "w", encoding="utf-8") as f:
+        for name in champion_names:
+            f.write(f"{name}\n")
+    print(f"Saved {len(champion_names)} champion names to {CHAMPION_NAMES_FILE}")
     dataset = ChampionStatsDataset(
         champion_df,
         CHAMPION_FEATURES,

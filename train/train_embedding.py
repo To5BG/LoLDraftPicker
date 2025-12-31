@@ -7,16 +7,15 @@ import os
 
 from models import ChampionEmbedding
 from train.trainers import EmbeddingTrainer
-from utils import ChampionStatsDataset, load_champion_stats, save_champion_embeddings
-from utils import EmbeddingNormalizer, save_normalizer
+from utils import ChampionStatsDataset, load_champion_stats
+from utils import EmbeddingNormalizer
 from config import *
 
 
-def train_embedding_model():
+if __name__ == "__main__":
     print("=" * 60)
     print("Training Champion Embedding Model")
     print("=" * 60)
-
     # Load champion stats
     print(f"\nLoading champion stats from {CHAMPION_STATS_FILE}...")
     champion_df = load_champion_stats(CHAMPION_STATS_FILE)
@@ -94,7 +93,7 @@ def train_embedding_model():
             embeddings_dict[dataset.champion_names[i]] = embedding
             embeddings_list.append(embedding)
     # Save raw (unconstrained) embeddings
-    save_champion_embeddings(embeddings_dict, EMBEDDINGS_PATH)
+    torch.save(embeddings_dict, EMBEDDINGS_PATH)
     print(f"Saved raw embeddings to {EMBEDDINGS_PATH}")
     # Fit normalizer and save normalization parameters
     print("\nComputing normalization parameters...")
@@ -105,7 +104,7 @@ def train_embedding_model():
         target_range=(-1, 1),  # Change to (0, 1) if preferred
     )
     normalizer.fit(all_embeddings)
-    save_normalizer(normalizer, EMBEDDING_NORMALIZER_MODEL_PATH)
+    torch.save(normalizer.get_params(), EMBEDDING_NORMALIZER_MODEL_PATH)
     print(f"Saved normalizer to {EMBEDDING_NORMALIZER_MODEL_PATH}")
     # Optionally save normalized embeddings too
     normalized_embeddings_dict = {}
@@ -113,12 +112,7 @@ def train_embedding_model():
         normalized_embeddings_dict[name] = normalizer.transform(
             emb.unsqueeze(0)
         ).squeeze(0)
-    save_champion_embeddings(normalized_embeddings_dict, EMBEDDINGS_NORMALIZED_PATH)
+    torch.save(normalized_embeddings_dict, EMBEDDINGS_NORMALIZED_PATH)
     print(f"Saved normalized embeddings to {EMBEDDINGS_NORMALIZED_PATH}")
     print("\nEmbedding training complete!")
     print(f"Best validation loss: {best_val_loss:.4f}")
-    return embeddings_dict
-
-
-if __name__ == "__main__":
-    train_embedding_model()

@@ -163,9 +163,5 @@ def load_draft_history(filepath):
         return json.load(f)
 
 
-def save_champion_embeddings(embeddings_dict, filepath):
-    torch.save(embeddings_dict, filepath)
-
-
 def load_champion_embeddings(filepath):
     return torch.load(filepath)

@@ -98,10 +98,6 @@ class EmbeddingNormalizer:
         self.is_fitted = params["is_fitted"]
 
 
-def save_normalizer(normalizer, filepath):
-    torch.save(normalizer.get_params(), filepath)
-
-
 def load_normalizer(filepath):
     params = torch.load(filepath)
     normalizer = EmbeddingNormalizer()

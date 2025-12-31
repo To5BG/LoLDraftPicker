@@ -78,7 +78,7 @@ def scrape_champion(champion_name: str):
 
 def save_champion_data_and_stats(champ_name, data):
     # Save to file
-    file_name = f"{SCRAP_DATA_PATH}/{champ_name.replace(' ', '_')}.json"
+    file_name = f"{SCRAP_DATA_PATH}/{champ_name}.json"
     os.makedirs(SCRAP_DATA_PATH, exist_ok=True)
     with open(file_name, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=4)

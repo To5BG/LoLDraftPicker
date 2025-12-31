@@ -62,6 +62,7 @@ kassadin
 katarina
 kayle
 kayn
+kench
 kennen
 khazix
 kindred
@@ -129,7 +130,6 @@ soraka
 swain
 sylas
 syndra
-tahmkench
 taliyah
 talon
 taric
@@ -153,10 +153,10 @@ viktor
 vladimir
 volibear
 warwick
-xayah
 wukong
+xayah
 xerath
-xinzhao
+xin
 yasuo
 yone
 yorick

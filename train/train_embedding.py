@@ -30,7 +30,8 @@ def train_embedding_model():
     print(f"Saved {len(champion_names)} champion names to {CHAMPION_NAMES_FILE}")
     dataset = ChampionStatsDataset(
         champion_df,
-        CHAMPION_FEATURES,
+        numeric_features=CHAMPION_NUMERIC_FEATURES,
+        categorical_features=CHAMPION_CATEGORICAL_FEATURES,
         use_class_onehot=USE_CLASS_ONEHOT,
     )
     # Split into train/val

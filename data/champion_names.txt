@@ -69,7 +69,7 @@ kindred
 kled
 kog
 leblanc
-lee_sin
+leesin
 leona
 lillia
 lissandra
@@ -79,10 +79,10 @@ lux
 malphite
 malzahar
 maokai
-master_yi
+masteryi
 mel
 milio
-Miss_Fortune
+missfortune
 mordekaiser
 morgana
 naafiri

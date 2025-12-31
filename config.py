@@ -1,5 +1,5 @@
 # Champion parameters
-CHAMPION_FEATURES = [
+CHAMPION_NUMERIC_FEATURES = [
     "hp",
     "mp",
     "ar",
@@ -13,6 +13,9 @@ CHAMPION_FEATURES = [
     "control",
     "mobility",
     "utility",
+]
+
+CHAMPION_CATEGORICAL_FEATURES = [
     "class",
 ]
 
@@ -35,20 +38,23 @@ CHAMPION_CLASSES = [
 
 # Whether to use one-hot encoding for class (True) or label encoding (False)
 USE_CLASS_ONEHOT = True
+EMBEDDING_INPUT_DIMENSIONS = len(CHAMPION_NUMERIC_FEATURES) + (
+    len(CHAMPION_CLASSES) if USE_CLASS_ONEHOT else 1
+)
 
 # Model hyperparameters
 EMBEDDING_CONFIG = {
-    "input_dim": len(CHAMPION_FEATURES),
-    "embedding_dim": 2,
-    "hidden_dims": [],
-    "dropout": 0.2,
+    "input_dim": EMBEDDING_INPUT_DIMENSIONS,
+    "embedding_dim": 3,
+    "hidden_dims": [32],
+    "dropout": 0.15,
     "learning_rate": 0.001,
     "batch_size": 8,
-    "epochs": 100,
+    "epochs": 1000,
     # Loss weights
     "lambda_distance": 1.0,
     "lambda_uniformity": 1.0,
-    "lambda_ortho": 0.1,
+    "lambda_ortho": 0.15,
 }
 
 # Picker config (embedding size is in EMBEDDING_CONFIG)

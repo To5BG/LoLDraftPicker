@@ -5,7 +5,8 @@ from pprint import pprint
 import json
 from config import (
     SCRAP_DATA_PATH,
-    CHAMPION_FEATURES,
+    CHAMPION_CATEGORICAL_FEATURES,
+    CHAMPION_NUMERIC_FEATURES,
     CHAMPION_STATS_FILE,
     CHAMPION_NAMES_FILE,
 )
@@ -87,7 +88,7 @@ def save_champion_data_and_stats(champ_name, data):
         feature: data.get(feature)
         or data["numeric_stats"].get(feature)
         or data["wheel_stats"].get(feature)
-        for feature in CHAMPION_FEATURES
+        for feature in CHAMPION_NUMERIC_FEATURES + CHAMPION_CATEGORICAL_FEATURES
     }
     # Cast values
     for k, v in list(champion_stats.items()):
@@ -106,7 +107,11 @@ def save_champion_data_and_stats(champ_name, data):
         if os.path.exists(CHAMPION_STATS_FILE):
             stats_df = pd.read_csv(CHAMPION_STATS_FILE)
         else:
-            stats_df = pd.DataFrame(columns=["champion_name"] + CHAMPION_FEATURES)
+            stats_df = pd.DataFrame(
+                columns=["champion_name"]
+                + CHAMPION_NUMERIC_FEATURES
+                + CHAMPION_CATEGORICAL_FEATURES
+            )
         # Prepare row
         row = {
             "champion_name": champ_name,
@@ -163,7 +168,8 @@ if __name__ == "__main__":
                     feature: data.get(feature)
                     or data["numeric_stats"].get(feature)
                     or data["wheel_stats"].get(feature)
-                    for feature in CHAMPION_FEATURES
+                    for feature in CHAMPION_NUMERIC_FEATURES
+                    + CHAMPION_CATEGORICAL_FEATURES
                 }
             except Exception as e:
                 print(e)
